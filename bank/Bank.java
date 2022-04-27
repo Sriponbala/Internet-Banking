@@ -1,35 +1,162 @@
 package bank;
 
 import java.util.*;
-import customer.Customer;
+import bank.Customer;
 import utils.BankUtils;
+import utils.Validation;
 
 public class Bank {
 
-	private long accountNumber;
-	private String bankName = "SBI";
-	private String ifsc = "SBI0AMBATT";
-	private String bankAddress = "No.7,Ambattur, Chennai-600053";
-	private String bankEmail = "sbiambattur@sbi.co.in";
-	private long phoneNo = 044_2625_3301;
-	private long faxNo = 022222742431;
+	private long accountNumber = 0;
+	private String bankName = "";
+	private String ifsc = "";
+	private String bankAddress = "";
+	private String bankEmail = "";
+	private long phoneNo = 0;
+	private long faxNo = 0;
+	private HashMap<Long, Customer> accounts = new HashMap<Long, Customer>();
 	
-	private HashMap<Long, NewAccount> accounts = new HashMap<>();
+	public Bank(HashMap bankDetails) {
+		
+		this.bankName = (String) bankDetails.get("name");
+		this.ifsc = (String) bankDetails.get("ifsc");
+		this.bankAddress = (String) bankDetails.get("address");
+		this.bankEmail = (String) bankDetails.get("email");
+		this.phoneNo = (long) bankDetails.get("phoneNo");
+		this.faxNo = (long) bankDetails.get("faxNo");
+	}
 	
-	public HashMap<Long, NewAccount> getAccounts() {
+	public long getAccountNumber() {
+		return accountNumber;
+	}
+
+	public void setAccountNumber(long accountNumber) {
+		this.accountNumber = accountNumber;
+	}
+
+	public String getBankName() {
+		return bankName;
+	}
+
+	public void setBankName(String bankName) {
+		this.bankName = bankName;
+	}
+
+	public String getIfsc() {
+		return ifsc;
+	}
+
+	public void setIfsc(String ifsc) {
+		this.ifsc = ifsc;
+	}
+
+	public String getBankAddress() {
+		return bankAddress;
+	}
+
+	public void setBankAddress(String bankAddress) {
+		this.bankAddress = bankAddress;
+	}
+
+	public String getBankEmail() {
+		return bankEmail;
+	}
+
+	public void setBankEmail(String bankEmail) {
+		this.bankEmail = bankEmail;
+	}
+
+	public long getPhoneNo() {
+		return phoneNo;
+	}
+
+	public void setPhoneNo(long phoneNo) {
+		this.phoneNo = phoneNo;
+	}
+
+	public long getFaxNo() {
+		return faxNo;
+	}
+
+	public void setFaxNo(long faxNo) {
+		this.faxNo = faxNo;
+	}
+
+	public HashMap<Long, Customer> getAccounts() {
 		return accounts;
 	}
 
-	public void setAccounts(HashMap<Long, NewAccount> accounts) {
-		this.accounts = accounts;
+	public void createAccount(NewAccount newAccount) {
+		try {
+			
+			BankUtils bankUtils = new BankUtils();
+			accountNumber = bankUtils.generateAccountNumber();
+			newAccount.setAccountNumber(accountNumber);
+			Customer customer = new Customer(); // composition
+			customer.setFirstName(newAccount.getFirstName());
+			customer.setLastName(newAccount.getLastName());
+			customer.setEmail(newAccount.getEmail());
+			customer.setAddress(newAccount.getAddress());
+			customer.setPassword(newAccount.getPassword());
+			customer.setMobileNumber(newAccount.getMobileNumber());
+			customer.setAccountNumber(newAccount.getAccountNumber());
+			
+			accounts.put(accountNumber, customer);
+			
+		} catch(Exception exception) {
+			
+			System.out.println("Error : Bank : createAccount(NewAccount newAccount) : " + exception);
+		}
+	}
+	
+	public Login verifyAccount(Login login) {
+		try {
+			long accountNumber = login.getAccountNumber();
+			String currentPassword = login.getPassword();
+			boolean isValid = false;
+			if(accounts.containsKey(accountNumber)) {
+				Customer customer = accounts.get(accountNumber);
+				String customerPassword = customer.getPassword();
+				if(customerPassword.equals(currentPassword)) {
+					login.setCustomer(customer);
+					isValid = true;
+				} else {
+					isValid = false;
+				}
+			} else {
+				isValid = false;
+			}
+          	login.setIsValid(isValid);
+				
+		} catch(Exception exception) {
+			System.out.println("Error : Bank : verifyAccount(Login login) : " + exception);
+		}
+		 return login;
 	}
 
-	public void createAccount(NewAccount newAccount) {
-		
-		BankUtils bankUtils = new BankUtils();
-		accountNumber = bankUtils.generateAccountNumber();
-        System.out.println("Account Number : "+accountNumber);
-		newAccount.setAccountNumber(accountNumber);
-		accounts.put(accountNumber, newAccount);
+	public boolean handleTransaction(Customer customer, Transaction transaction) {
+		boolean insufficientBalance = false;
+		try {
+			if(transaction.getTransactionType().equals("DEPOSIT")) {
+				customer.setBalance(customer.getBalance() + transaction.getAmount());
+				accounts.put(customer.getAccountNumber(), customer);
+				insufficientBalance = false;
+			}
+			else {
+				if(customer.getBalance() > transaction.getAmount()) {
+					customer.setBalance(customer.getBalance() - transaction.getAmount());
+					accounts.put(customer.getAccountNumber(), customer);
+					insufficientBalance = false;
+				}
+				else {
+					insufficientBalance = true;
+				}
+			}
+			
+		} catch(Exception exception) {
+			System.out.println("Error : Bank : handleTransaction(Customer customer, Transaction transaction) : " + exception);
+		}
+		return insufficientBalance;
 	}
 }
+
