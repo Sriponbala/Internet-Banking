@@ -1,9 +1,7 @@
 package bank;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Scanner;
 import utils.Validation;
 
@@ -70,7 +68,7 @@ public class BankingMenu {
 		}
 	}
 	
-	public void showMenu1(Bank bank) {
+	public void showLoginScreen(Bank bank) {
 		
 		try {
 			int option;
@@ -129,18 +127,18 @@ public class BankingMenu {
 				    	   displayMessage("NEW ACCOUNT CREATED!");
 				    	   displayMessage("ACCOUNT NUMBER:"+bank.getAccountNumber());
 						   displayHeader(bank);
-						   showMenu1(bank);  
+						   showLoginScreen(bank);  
 			    	 } 
 			    	 break;
 			     case 'n':
 			    	   displayHeader(bank);
-			    	   showMenu1(bank);
+			    	   showLoginScreen(bank);
 			    	   break;
 			}
 		} catch(Exception exception) {
 			System.out.println("Error : BankingMenu : newAccount(Bank bank) : \n" + exception);
 			displayHeader(bank);
-			showMenu1(bank);
+			showLoginScreen(bank);
 		}	
 	}
 	
@@ -160,19 +158,19 @@ public class BankingMenu {
 			if(login.isIsValid()) {
 				displayMessage("SUCCESSFUL LOGIN!");
 				displayHeader(bank);
-				showMenu2(bank, login.getCustomer());
+				showHomePage(bank, login.getCustomer());
 			}
 			else {
 				displayMessage("VERIFICATION FAILED");
 				displayHeader(bank);
-		    	showMenu1(bank);
+		    	showLoginScreen(bank);
 			}
 		} catch(Exception exception) {
 			System.out.println("Error : BankingMenu : login(Bank bank) : \n" + exception);
 		}	
 	}
 	
-	public void showMenu2(Bank bank, Customer customer) {
+	public void showHomePage(Bank bank, Customer customer) {
         try {
 		    int option;
 		    drawOutline();
@@ -206,7 +204,7 @@ public class BankingMenu {
 		        	   break;
 		        case 6:
 		        	   displayHeader(bank);
-			    	   showMenu1(bank);
+			    	   showLoginScreen(bank);
 			    	   break;    
 		    }
 	   } catch(Exception exception) {
@@ -220,7 +218,7 @@ public class BankingMenu {
 			displayMessage("BALANCE");
 			System.out.println("Balance Amount  : Rs. " + customer.getBalance());
 			displayHeader(bank);
-			showMenu2(bank, customer);
+			showHomePage(bank, customer);
 		} catch(Exception exception) {
 			System.out.println("Error : BankingMenu : viewBalance(Bank bank, Customer customer) : \n" + exception);
 		}	
@@ -252,7 +250,7 @@ public class BankingMenu {
             	System.out.println("Current Balance : " + customer.getBalance());
 //            	System.out.println(customer.getTransactions().toString());
             	displayHeader(bank);
-    			showMenu2(bank, customer);
+    			showHomePage(bank, customer);
             }
             else {
             	throw new Exception("Insufficient Balance!");
@@ -260,7 +258,7 @@ public class BankingMenu {
 		} catch(Exception exception) {
 			System.out.println("Error : BankingMenu : transaction(Bank bank, Customer customer) : \n" + exception);
 			displayHeader(bank);
-			showMenu2(bank, customer);
+			showHomePage(bank, customer);
 		}
 	}
 
@@ -268,15 +266,15 @@ public class BankingMenu {
 		try {
 			displayMessage("TRANSACTION HISTORY");
 			for(int i = 0; i < customer.getTransactions().size(); i++) {
-				HashMap l = (HashMap)customer.getTransactions().get(i); //downcasting : Object to HashMap
-				for(Object key : l.keySet()) {
-					String stringkey = (String) key; //downcasting Object to String 
-					System.out.println(l.get(stringkey));
+				HashMap transactionMap = (HashMap)customer.getTransactions().get(i); //downcasting : Object to HashMap
+				for(Object key : transactionMap.keySet()) {
+					String transactionKey = (String) key; //downcasting Object to String 
+					System.out.println(transactionMap.get(transactionKey));
 				}
 				System.out.println();
 			}
 			displayHeader(bank);
-			showMenu2(bank, customer);
+			showHomePage(bank, customer);
 		} catch(Exception exception) {
 			System.out.println("Error : BankingMenu : showTransactionHistory(Bank bank, Customer customer) : \n" + exception);
 		}

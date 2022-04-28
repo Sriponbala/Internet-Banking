@@ -7,7 +7,7 @@ public class Login {
 	Scanner scanner = new Scanner(System.in);
 	private long accountNumber = 0;
 	private String password = "";
-	private Customer customer = null; //aggregation
+	private Customer customer = null; 
 	private boolean IsValid = false;
 
 	public boolean isIsValid() {

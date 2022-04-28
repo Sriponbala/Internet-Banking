@@ -16,6 +16,7 @@ public class Main {
             bankDetails.put("address", "No.7,Ambattur, Chennai-600053");
             bankDetails.put("faxNo", 022222742431l);
     
+            
 			Bank bank = new Bank(bankDetails);
 
 			BankingMenu bankingMenu = new BankingMenu();
@@ -23,7 +24,7 @@ public class Main {
 			bank.setValidation(validation);
 			
 			bankingMenu.displayHeader(bank);
-			bankingMenu.showMenu1(bank);
+			bankingMenu.showLoginScreen(bank);
 		} catch(Exception exception) {
 			System.out.println("Error : Main : main(String[] args) : " + exception);
 		}
