@@ -16,6 +16,16 @@ public class Bank {
 	private long faxNo = 0;
 	private HashMap<Long, Customer> accounts = new HashMap<Long, Customer>();
 	
+	private Validation validation = null;
+	
+	public Validation getValidation() {
+		return validation;
+	}
+
+	public void setValidation(Validation validation) {
+		this.validation = validation;
+	}
+
 	public Bank(HashMap bankDetails) {
 		
 		this.bankName = (String) bankDetails.get("name");
@@ -136,13 +146,13 @@ public class Bank {
 
 	public boolean handleTransaction(Customer customer, Transaction transaction) {
 		boolean insufficientBalance = false;
+		HashMap hashmap = new HashMap();
 		try {
 			if(transaction.getTransactionType().equals("DEPOSIT")) {
 				customer.setBalance(customer.getBalance() + transaction.getAmount());
 				accounts.put(customer.getAccountNumber(), customer);
-				insufficientBalance = false;
 			}
-			else {
+			else if(transaction.getTransactionType().equals("WITHDRAWAL")) {
 				if(customer.getBalance() > transaction.getAmount()) {
 					customer.setBalance(customer.getBalance() - transaction.getAmount());
 					accounts.put(customer.getAccountNumber(), customer);
@@ -152,7 +162,21 @@ public class Bank {
 					insufficientBalance = true;
 				}
 			}
+//			else {
+//				if(customer.getBalance() > transaction.getAmount()) {
+//				  //     acc
+//				}
+//			}
 			
+			if(insufficientBalance == false) {
+				
+				hashmap.put("TRANSACTION TYPE ", transaction.getTransactionType());
+				hashmap.put("AMOUNT ", transaction.getAmount());
+				hashmap.put("DATE ", transaction.getTransactionDate());
+				hashmap.put("REMARKS ", transaction.getRemarks());
+				customer.setTransactions(hashmap);
+				accounts.put(customer.getAccountNumber(), customer);
+			}
 		} catch(Exception exception) {
 			System.out.println("Error : Bank : handleTransaction(Customer customer, Transaction transaction) : " + exception);
 		}

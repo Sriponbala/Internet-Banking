@@ -5,7 +5,15 @@ import java.util.Date;
 public class Transaction {
 
 	 private String transactionType = "", remarks = "";
+	 private long toAccountNumber = 0;
 	 private double amount = 0;
+	 
+	 public long getToAccountNumber() {
+		return toAccountNumber;
+	 }
+	 public void setToAccountNumber(long toAccountNumber) {
+		this.toAccountNumber = toAccountNumber;
+	 }
 	 private Date transactionDate;
 	 
 	 public String getTransactionType() {

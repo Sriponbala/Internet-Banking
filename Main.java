@@ -1,7 +1,7 @@
 import java.util.HashMap;
 import bank.Bank;
 import bank.BankingMenu;
-
+import utils.Validation;
 
 public class Main {
 
@@ -19,6 +19,9 @@ public class Main {
 			Bank bank = new Bank(bankDetails);
 
 			BankingMenu bankingMenu = new BankingMenu();
+			Validation validation = new Validation();
+			bank.setValidation(validation);
+			
 			bankingMenu.displayHeader(bank);
 			bankingMenu.showMenu1(bank);
 		} catch(Exception exception) {
