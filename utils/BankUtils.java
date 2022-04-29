@@ -10,7 +10,11 @@ public class BankUtils {
 	
 		long accountNumber = 0;
 		try {
-			accountNumber = (long)(100000000000000l * random.nextDouble());	
+			long randomNumber = (long)(100000000000000l * random.nextDouble());
+			if(String.valueOf(randomNumber).length() != 14) {
+				randomNumber += 100000000000000l;
+			}
+			accountNumber = randomNumber;	
 		} catch(Exception exception) {
 			System.out.println("Error : BankUtils : generateAccountNumber() : "+exception);
 		}
@@ -21,7 +25,11 @@ public class BankUtils {
 		
 		int transactionId = 0;
 		try {
-			transactionId = (int)(100000 * random.nextDouble());;
+			int randomNumber = (int)(100000 * random.nextDouble());
+			if(String.valueOf(randomNumber).length() != 6) {
+				randomNumber += 100000;
+			}
+			transactionId = randomNumber;	
 		} catch(Exception exception) {
 			System.out.println("Error : BankUtils : generateTransactionId() : "+exception);
 		}

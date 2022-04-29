@@ -69,33 +69,40 @@ public class BankingMenu {
 	}
 	
 	public void showLoginScreen(Bank bank) {
-		
-		try {
-			int option;
-			drawOutline();
-			System.out.println("| 1. New Account                        |");
-			System.out.println("| 2. Login                              |");
-			System.out.println("| 3. Exit                               |");
-			drawOutline();
-			System.out.print("Enter your choice : ");
-			option = scanner.nextInt();
-			scanner.nextLine();
-			
-			switch(option) {
+			boolean open = true;
+			while(open) {
+				int option = 0;
+				drawOutline();
+				System.out.println("| 1. New Account                        |");
+				System.out.println("| 2. Login                              |");
+				System.out.println("| 3. Exit                               |");
+				drawOutline();
+				System.out.print("Enter your choice : ");
+				try {
+				option = scanner.nextInt();
+				} catch(Exception exception) {
+					scanner.nextLine();
+					option = 0;
+				}
+				switch(option) {
 
-			  case 1: 
-				  newAccount(bank, bank.getValidation());
-				  break;
-			  case 2:
-				  login(bank);
-				  break;
-			  case 3:
-				  System.out.println();
-				  displayMessage("THANK YOU!");
+				  case 1: 
+					  newAccount(bank, bank.getValidation());
+					  break;
+				  case 2:
+					  login(bank);
+					  break;
+				  case 3:
+					  
+					  displayMessage("THANK YOU!");
+					  open = false;
+					  break;
+				  default : 
+					   displayMessage("INVALID OPTION!");
+					   displayHeader(bank);
+					   break;
+				}
 			}
-		} catch(Exception exception) {
-			System.out.println("Error : BankingMenu : showMenu1(Bank bank) : " + exception);
-		}
 	}
 	
 	public void newAccount(Bank bank, Validation validation) {
@@ -104,41 +111,56 @@ public class BankingMenu {
 			displayMessage("NEW ACCOUNT");
 			NewAccount newAccount = new NewAccount();
 			
+			scanner.nextLine();
 			System.out.print("First Name : ");
-			newAccount.setFirstName(scanner.nextLine());
+			newAccount.setFirstName(scanner.nextLine().trim());
 			System.out.print("Last Name : ");
-			newAccount.setLastName(scanner.nextLine());
+			newAccount.setLastName(scanner.nextLine().trim());
 			System.out.print("Email : ");
-			newAccount.setEmail(scanner.nextLine());
+			newAccount.setEmail(scanner.nextLine().trim());
 			System.out.print("Address : ");
 			newAccount.setAddress(scanner.nextLine());
 			System.out.print("Password : ");
 			newAccount.setPassword(scanner.nextLine());
 			System.out.print("Confirm Password : ");
 			newAccount.setConfirmPassword(scanner.nextLine());
-			System.out.print("Mobile Number : ");
-			newAccount.setMobileNumber(scanner.nextLong());
-			scanner.nextLine();
-			System.out.print("Confirm(y/n) ? : ");
-			switch(scanner.next().charAt(0)) {
-			     case 'y':
-			    	 if(validation.verifyPassword(newAccount.getPassword(), newAccount.getConfirmPassword(), newAccount) && validation.duplicateAccount(newAccount.getMobileNumber(), bank)) {
-			    		   bank.createAccount(newAccount);
-				    	   displayMessage("NEW ACCOUNT CREATED!");
-				    	   displayMessage("ACCOUNT NUMBER:"+bank.getAccountNumber());
-						   displayHeader(bank);
-						   showLoginScreen(bank);  
-			    	 } 
-			    	 break;
-			     case 'n':
-			    	   displayHeader(bank);
-			    	   showLoginScreen(bank);
-			    	   break;
+			boolean open  = true;
+			while(open) {
+				try {
+					System.out.print("Mobile Number : ");
+					newAccount.setMobileNumber(scanner.nextLong());
+					open = false;
+				} catch(Exception exception) {
+					displayMessage("INPUT MISMATCH EXCEPTION");
+					scanner.nextLine();
+				}
 			}
+			
+			boolean option = true;
+			while(option) {
+				System.out.print("Confirm(y/n) ? : ");
+				switch(scanner.next().charAt(0)) {
+				     case 'y':
+				    	 if(validation.verifyPassword(newAccount.getPassword(), newAccount.getConfirmPassword(), newAccount) && validation.duplicateAccount(newAccount.getMobileNumber(), bank)) {
+				    		   bank.createAccount(newAccount);
+					    	   displayMessage("NEW ACCOUNT CREATED!");
+					    	   displayMessage("ACCOUNT NUMBER:"+bank.getAccountNumber());
+							   displayHeader(bank);
+							   option = false;
+				    	 } 
+				    	 break;
+				     case 'n':
+				    	   displayHeader(bank);
+				    	   option = false;
+				    	   break;
+				     default : 
+				    	   displayMessage("INVALID OPTION!");
+						   break;
+				}
+			}	
 		} catch(Exception exception) {
-			System.out.println("Error : BankingMenu : newAccount(Bank bank) : \n" + exception);
+			System.out.println("Error : BankingMenu : newAccount(Bank bank) : \n" + exception.getMessage());
 			displayHeader(bank);
-			showLoginScreen(bank);
 		}	
 	}
 	
@@ -146,9 +168,17 @@ public class BankingMenu {
 		try {
 			displayMessage("LOGIN");
 			Login login = new Login();
-			
-			System.out.print("Enter the Account Number : ");
-			login.setAccountNumber(scanner.nextLong());
+			boolean open  = true;
+			while(open) {
+				try {
+					System.out.print("Enter the Account Number : ");
+					login.setAccountNumber(scanner.nextLong());
+					open = false;
+				} catch (Exception exception) {
+					displayMessage("INPUT MISMATCH EXCEPTION");
+					scanner.nextLine();
+				}
+			}
 			scanner.nextLine();
 			System.out.print("Password : ");
 			login.setPassword(scanner.nextLine());
@@ -163,52 +193,65 @@ public class BankingMenu {
 			else {
 				displayMessage("VERIFICATION FAILED");
 				displayHeader(bank);
-		    	showLoginScreen(bank);
 			}
 		} catch(Exception exception) {
-			System.out.println("Error : BankingMenu : login(Bank bank) : \n" + exception);
+			System.out.println("Error : BankingMenu : login(Bank bank) : \n" + exception.getMessage());
 		}	
 	}
 	
 	public void showHomePage(Bank bank, Customer customer) {
         try {
-		    int option;
-		    drawOutline();
-		    System.out.println("| 1. Balance                            |");
-		    System.out.println("| 2. Deposit                            |");
-		    System.out.println("| 3. Withdraw                           |");
-		    System.out.println("| 4. Transfer Fund                      |");
-		    System.out.println("| 5. Statement                |");
-		    System.out.println("| 6. Signout                            |");
-		    drawOutline();
-		    System.out.print("Enter your choice : ");
-		    option = scanner.nextInt();
-		    scanner.nextLine();
-		
-		    switch(option) {
+        	boolean open = true;
+			while(open) {
+				int option = 0;
+			    drawOutline();
+			    System.out.println("| 1. Balance                            |");
+			    System.out.println("| 2. Deposit                            |");
+			    System.out.println("| 3. Withdraw                           |");
+			    System.out.println("| 4. Transfer Fund                      |");
+			    System.out.println("| 5. Statement                          |");
+			    System.out.println("| 6. Profile                            |");
+			    System.out.println("| 7. Signout                            |");
+			    drawOutline();
+			    System.out.print("Enter your choice : ");
+			    try {
+					option = scanner.nextInt();
+				} catch(Exception exception) {
+					scanner.nextLine();
+					option = 0;
+			    }
+			    switch(option) {
 
-		        case 1: 
-			           viewBalance(bank, customer);
-			           break;
-		        case 2:
-                       transaction(bank, customer, "DEPOSIT");
-			           break;
-		        case 3:
-	                   transaction(bank, customer, "WITHDRAWAL");
-				       break;
-		        case 4:
-		        	   transaction(bank, customer, "TRANSFER FUND");
-				       break;
-		        case 5:
-		        	   showTransactionHistory(bank, customer);
-		        	   break;
-		        case 6:
-		        	   displayHeader(bank);
-			    	   showLoginScreen(bank);
-			    	   break;    
-		    }
+			        case 1: 
+				           viewBalance(bank, customer);
+				           break;
+			        case 2:
+	                       transaction(bank, customer, "DEPOSIT");
+				           break;
+			        case 3:
+		                   transaction(bank, customer, "WITHDRAWAL");
+					       break;
+			        case 4:
+			        	   transaction(bank, customer, "TRANSFER FUND");
+					       break;
+			        case 5:
+			        	   showTransactionHistory(bank, customer);
+			        	   break;
+			        case 6:
+			        	   viewProfile(bank, customer);
+			        	   break;
+			        case 7:
+			        	   displayHeader(bank);
+			        	   open = false;
+				    	   break; 
+			        default:
+			        	displayMessage("INVALID OPTION!");
+			        	displayHeader(bank);
+						break;
+		     }
+		  }
 	   } catch(Exception exception) {
-		      System.out.println("Error : BankingMenu : showMenu1(Bank bank) : \n" + exception);
+		      System.out.println("Error : BankingMenu : showHomePage(Bank bank, Customer customer) : \n" + exception);
 	   }
 	}
 	
@@ -218,9 +261,8 @@ public class BankingMenu {
 			displayMessage("BALANCE");
 			System.out.println("Balance Amount  : Rs. " + customer.getBalance());
 			displayHeader(bank);
-			showHomePage(bank, customer);
 		} catch(Exception exception) {
-			System.out.println("Error : BankingMenu : viewBalance(Bank bank, Customer customer) : \n" + exception);
+			System.out.println("Error : BankingMenu : viewBalance(Bank bank, Customer customer) : \n" + exception.getMessage());
 		}	
 	}
 	
@@ -237,28 +279,24 @@ public class BankingMenu {
 			}
 			
 			Transaction transaction = new Transaction();
-			if(transactionType.equals("TRANSFER FUND")) {
-				System.out.println("Transfer to Account Number : ");
-				transaction.setToAccountNumber(scanner.nextLong());
-			}
 			System.out.print("Amount : ");
 			transaction.setAmount(scanner.nextDouble());
 			scanner.nextLine();
 			transaction.setTransactionDate(new Date());
 			transaction.setTransactionType(transactionType);
+			if(transactionType.equals("TRANSFER FUND")) {
+				System.out.println("Transfer to Account Number : ");
+				transaction.setToAccountNumber(scanner.nextLong());
+				scanner.nextLine();
+			}
+			
             if(!(bank.handleTransaction(customer, transaction))) {
-            	System.out.println("Current Balance : " + customer.getBalance());
-//            	System.out.println(customer.getTransactions().toString());
+            	System.out.println("Current Balance in " + customer.getFirstName() + " " + customer.getLastName() + " : " + customer.getBalance());
             	displayHeader(bank);
-    			showHomePage(bank, customer);
-            }
-            else {
-            	throw new Exception("Insufficient Balance!");
             }
 		} catch(Exception exception) {
-			System.out.println("Error : BankingMenu : transaction(Bank bank, Customer customer) : \n" + exception);
+			System.out.println("Error : BankingMenu : transaction(Bank bank, Customer customer) : \n" + exception.getMessage());
 			displayHeader(bank);
-			showHomePage(bank, customer);
 		}
 	}
 
@@ -274,9 +312,21 @@ public class BankingMenu {
 				System.out.println();
 			}
 			displayHeader(bank);
-			showHomePage(bank, customer);
 		} catch(Exception exception) {
 			System.out.println("Error : BankingMenu : showTransactionHistory(Bank bank, Customer customer) : \n" + exception);
+		}
+	}
+	
+	public void viewProfile(Bank bank, Customer customer) {
+		try {
+			displayMessage("CUSTOMER PROFILE");
+			System.out.println("NAME    : " + customer.getFirstName() + " " + customer.getLastName());
+			System.out.println("EMAIL   : " + customer.getEmail());
+			System.out.println("ADDRESS : " + customer.getAddress());
+			System.out.println("PH.NO.  : " + customer.getMobileNumber());
+			displayHeader(bank);
+		} catch (Exception exception) {
+			System.out.println("Error : BankingMenu : viewProfile(Customer customer) : \n" + exception.getMessage());
 		}
 	}
 }

@@ -7,9 +7,8 @@ public class Validation {
 	
     boolean verified;
 	public boolean verifyPassword(String password, String confirmPassword, NewAccount newAccount) throws Exception {
-		verified = false;
-		try {
-			
+		    verified = false;
+//			confirmPassword = null;
 			if(confirmPassword.equals(newAccount.getPassword())) {
 				verified = true;
 			}
@@ -17,16 +16,12 @@ public class Validation {
 				verified = false;
 				throw new Exception("Incorrect Password");
 			}
-		}catch(Exception exception) {
-			System.out.println("Error : Validation : verifyPassword(String password, long accountNumber, Bank bank) : \n" + exception);
-		    throw exception; //rethrow
-		}
+
 		return verified;
 	}
 
 	public boolean duplicateAccount(long mobileNumber, Bank bank) throws Exception {
-		verified = false;
-		try {
+		    verified = false;
 			if(bank.getAccounts().size() != 0) {
 				for(int i = 0; i < bank.getAccounts().size(); i++) {
 					for(Long key : bank.getAccounts().keySet()) { 
@@ -35,19 +30,14 @@ public class Validation {
 					    }
 					    else {
 						       verified = false;
-						       throw new Exception("Customer already exists"); //rethrow
+						       throw new Exception("Customer already exists"); 
 					    }
 					}
 				}
 			}
 			else {
 				verified = true;
-			}
-			
-		} catch(Exception exception) {
-			System.out.println("Error : Validation : duplicateAccount(long mobileNumber, Bank bank) : \n" + exception);
-		    throw exception;
-		}
+			}	
 		return verified;
 	}
 }

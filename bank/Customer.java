@@ -7,7 +7,7 @@ public class Customer {
 
 	private String firstName = "", lastName = "", email = "", address = "", password = "";
 	private long mobileNumber = 0, accountNumber = 0;
-	private double balance = 500;
+	private double balance = 0;
 	private ArrayList<HashMap> transactions = new ArrayList<HashMap>();
 	
 	public String getFirstName() {

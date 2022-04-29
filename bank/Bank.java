@@ -119,8 +119,8 @@ public class Bank {
 		}
 	}
 	
-	public Login verifyAccount(Login login) {
-		try {
+	public Login verifyAccount(Login login) throws Exception {
+		
 			long accountNumber = login.getAccountNumber();
 			String currentPassword = login.getPassword();
 			boolean isValid = false;
@@ -136,50 +136,66 @@ public class Bank {
 			} else {
 				isValid = false;
 			}
-          	login.setIsValid(isValid);
-				
-		} catch(Exception exception) {
-			System.out.println("Error : Bank : verifyAccount(Login login) : " + exception);
-		}
+          	login.setIsValid(isValid);				
 		 return login;
 	}
 
-	public boolean handleTransaction(Customer customer, Transaction transaction) {
-		boolean insufficientBalance = false;
-		HashMap hashmap = new HashMap();
-		try {
-			if(transaction.getTransactionType().equals("DEPOSIT")) {
+	public boolean handleTransaction(Customer customer, Transaction transaction) throws Exception {
+		    boolean insufficientBalance = false;
+		    HashMap hashmap = new HashMap();
+			if(transaction.getTransactionType().equals("DEPOSIT")) { //DEPOSIT
 				customer.setBalance(customer.getBalance() + transaction.getAmount());
 				accounts.put(customer.getAccountNumber(), customer);
 			}
-			else if(transaction.getTransactionType().equals("WITHDRAWAL")) {
-				if(customer.getBalance() > transaction.getAmount()) {
+			else if(transaction.getTransactionType().equals("WITHDRAWAL")) { // WITHDRAWAL
+				if(customer.getBalance() > transaction.getAmount()) { 
 					customer.setBalance(customer.getBalance() - transaction.getAmount());
 					accounts.put(customer.getAccountNumber(), customer);
 					insufficientBalance = false;
 				}
 				else {
 					insufficientBalance = true;
+					throw new Exception("Insufficient Balance!");
 				}
 			}
-//			else {
-//				if(customer.getBalance() > transaction.getAmount()) {
-//				  //     acc
-//				}
-//			}
-			
+			else { // FUND TRANSFER
+				if(accounts.containsKey(transaction.getToAccountNumber())) {
+					if(customer.getAccountNumber() != transaction.getToAccountNumber()) {
+						if(customer.getBalance() > transaction.getAmount()) {
+							accounts.get(transaction.getToAccountNumber()).setBalance(accounts.get(transaction.getToAccountNumber()).getBalance() + transaction.getAmount());
+						    customer.setBalance(customer.getBalance() - transaction.getAmount());
+						    accounts.put(customer.getAccountNumber(), customer);
+						    accounts.put(transaction.getToAccountNumber(), accounts.get(transaction.getToAccountNumber()));
+						}
+						else {
+							insufficientBalance = true;
+							throw new Exception("Insufficient Balance!");
+						}
+					}
+					else {
+						insufficientBalance = true;
+						throw new Exception("Cant transfer fund to the same account!");
+						
+					}
+				}
+				else {
+					insufficientBalance = true;
+					throw new Exception("Account not found!");
+				}
+			}		
 			if(insufficientBalance == false) {
-				
+
 				hashmap.put("TRANSACTION TYPE ", transaction.getTransactionType());
 				hashmap.put("AMOUNT ", transaction.getAmount());
 				hashmap.put("DATE ", transaction.getTransactionDate());
 				hashmap.put("REMARKS ", transaction.getRemarks());
 				customer.setTransactions(hashmap);
 				accounts.put(customer.getAccountNumber(), customer);
+				if(transaction.getTransactionType().equals("TRANSFER FUND")) {
+					accounts.get(transaction.getToAccountNumber()).setTransactions(hashmap);
+					accounts.put(transaction.getToAccountNumber(), accounts.get(transaction.getToAccountNumber()));
+				}			
 			}
-		} catch(Exception exception) {
-			System.out.println("Error : Bank : handleTransaction(Customer customer, Transaction transaction) : " + exception);
-		}
 		return insufficientBalance;
 	}
 }

@@ -15,10 +15,8 @@ public class Main {
             bankDetails.put("ifsc", "SBI0AMBATT");
             bankDetails.put("address", "No.7,Ambattur, Chennai-600053");
             bankDetails.put("faxNo", 022222742431l);
-    
-            
-			Bank bank = new Bank(bankDetails);
 
+			Bank bank = new Bank(bankDetails);
 			BankingMenu bankingMenu = new BankingMenu();
 			Validation validation = new Validation();
 			bank.setValidation(validation);
@@ -30,6 +28,5 @@ public class Main {
 		}
 			
 	}
-
 }
 
