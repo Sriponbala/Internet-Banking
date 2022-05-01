@@ -5,7 +5,6 @@ import java.util.Random;
 public class BankUtils {
 
 	Random random = new Random();
-	
 	public long generateAccountNumber() {
 	
 		long accountNumber = 0;

@@ -1,7 +1,6 @@
 package bank;
 
 import java.util.*;
-import bank.Customer;
 import utils.BankUtils;
 import utils.Validation;
 
@@ -15,7 +14,7 @@ public class Bank {
 	private long phoneNo = 0;
 	private long faxNo = 0;
 	private HashMap<Long, Customer> accounts = new HashMap<Long, Customer>();
-	
+
 	private Validation validation = null;
 	
 	public Validation getValidation() {
