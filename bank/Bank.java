@@ -26,22 +26,8 @@ public class Bank {
 		this.validation = validation;
 	}
 
-	public Bank(HashMap bankDetails) {
-		
-		this.bankName = (String) bankDetails.get("name");
-		this.ifsc = (String) bankDetails.get("ifsc");
-		this.bankAddress = (String) bankDetails.get("address");
-		this.bankEmail = (String) bankDetails.get("email");
-		this.phoneNo = (long) bankDetails.get("phoneNo");
-		this.faxNo = (long) bankDetails.get("faxNo");
-	}
-	
 	public long getAccountNumber() {
 		return accountNumber;
-	}
-
-	public void setAccountNumber(long accountNumber) {
-		this.accountNumber = accountNumber;
 	}
 
 	public String getBankName() {
@@ -100,9 +86,9 @@ public class Bank {
 		try {
 			
 			BankUtils bankUtils = new BankUtils();
-			accountNumber = bankUtils.generateAccountNumber();
+		    accountNumber = bankUtils.generateAccountNumber();
 			newAccount.setAccountNumber(accountNumber);
-			Customer customer = new Customer(); // composition
+			Customer customer = new Customer(); 
 			customer.setFirstName(newAccount.getFirstName());
 			customer.setLastName(newAccount.getLastName());
 			customer.setEmail(newAccount.getEmail());
@@ -188,7 +174,6 @@ public class Bank {
 				hashmap.put("TRANSACTION TYPE ", transaction.getTransactionType());
 				hashmap.put("AMOUNT ", transaction.getAmount());
 				hashmap.put("DATE ", transaction.getTransactionDate());
-				hashmap.put("REMARKS ", transaction.getRemarks());
 				customer.setTransactions(hashmap);
 				accounts.put(customer.getAccountNumber(), customer);
 				if(transaction.getTransactionType().equals("TRANSFER FUND")) {
@@ -199,4 +184,3 @@ public class Bank {
 		return insufficientBalance;
 	}
 }
-

@@ -8,6 +8,19 @@ import utils.Validation;
 public class BankingMenu {
     
 	int outlineWidth = 39;
+	public static final int NEWACCOUNT = 1;
+	public static final int LOGIN = 2;
+	public static final int EXIT = 3;
+	public static final char YES = 'y';
+	public static final char NO = 'n';
+	public static final int BALANCE = 1;
+	public static final int DEPOSIT = 2;
+	public static final int WITHDRAWAL = 3;
+	public static final int TRANSFER_FUND = 4;
+	public static final int STATEMENT = 5;
+	public static final int PROFILE = 6;
+	public static final int SIGNOUT = 7;
+	
 	Scanner scanner = new Scanner(System.in);
 
 	public void drawOutline() {
@@ -86,13 +99,13 @@ public class BankingMenu {
 				}
 				switch(option) {
 
-				  case 1: 
+				  case NEWACCOUNT: 
 					  newAccount(bank, bank.getValidation());
 					  break;
-				  case 2:
+				  case LOGIN:
 					  login(bank);
 					  break;
-				  case 3:
+				  case EXIT:
 					  
 					  displayMessage("THANK YOU!");
 					  open = false;
@@ -108,6 +121,7 @@ public class BankingMenu {
 	public void newAccount(Bank bank, Validation validation) {
 		
 		try {
+			
 			displayMessage("NEW ACCOUNT");
 			NewAccount newAccount = new NewAccount();
 			
@@ -120,8 +134,17 @@ public class BankingMenu {
 			newAccount.setEmail(scanner.nextLine().trim());
 			System.out.print("Address : ");
 			newAccount.setAddress(scanner.nextLine());
-			System.out.print("Password : ");
-			newAccount.setPassword(scanner.nextLine());
+			boolean passwordLoop = true;
+			while(passwordLoop) {
+				try {
+					System.out.print("Password(Length should atleast be 3) : ");
+					passwordLoop = newAccount.setPassword(scanner.nextLine(), passwordLoop);
+					
+				} catch(Exception exception) {
+					System.out.println(exception.getMessage());
+				}
+			}
+			
 			System.out.print("Confirm Password : ");
 			newAccount.setConfirmPassword(scanner.nextLine());
 			boolean open  = true;
@@ -140,7 +163,7 @@ public class BankingMenu {
 			while(option) {
 				System.out.print("Confirm(y/n) ? : ");
 				switch(scanner.next().charAt(0)) {
-				     case 'y':
+				     case YES:
 				    	 if(validation.verifyPassword(newAccount.getPassword(), newAccount.getConfirmPassword(), newAccount) && validation.duplicateAccount(newAccount.getMobileNumber(), bank)) {
 				    		   bank.createAccount(newAccount);
 					    	   displayMessage("NEW ACCOUNT CREATED!");
@@ -149,7 +172,7 @@ public class BankingMenu {
 							   option = false;
 				    	 } 
 				    	 break;
-				     case 'n':
+				     case NO:
 				    	   displayHeader(bank);
 				    	   option = false;
 				    	   break;
@@ -222,25 +245,25 @@ public class BankingMenu {
 			    }
 			    switch(option) {
 
-			        case 1: 
+			        case BALANCE: 
 				           viewBalance(bank, customer);
 				           break;
-			        case 2:
+			        case DEPOSIT:
 	                       transaction(bank, customer, "DEPOSIT");
 				           break;
-			        case 3:
+			        case WITHDRAWAL:
 		                   transaction(bank, customer, "WITHDRAWAL");
 					       break;
-			        case 4:
+			        case TRANSFER_FUND:
 			        	   transaction(bank, customer, "TRANSFER FUND");
 					       break;
-			        case 5:
+			        case STATEMENT:
 			        	   showTransactionHistory(bank, customer);
 			        	   break;
-			        case 6:
+			        case PROFILE:
 			        	   viewProfile(bank, customer);
 			        	   break;
-			        case 7:
+			        case SIGNOUT:
 			        	   displayHeader(bank);
 			        	   open = false;
 				    	   break; 
@@ -279,8 +302,18 @@ public class BankingMenu {
 			}
 			
 			Transaction transaction = new Transaction();
-			System.out.print("Amount : ");
-			transaction.setAmount(scanner.nextDouble());
+			boolean open = true;
+			while(open) {
+				System.out.print("Amount : ");
+				double amount = scanner.nextDouble();
+				if(amount >= 0) {
+					transaction.setAmount(amount);
+					open = false;
+				}
+				else {
+					System.out.println("Enter positive value!");
+				}
+			}
 			scanner.nextLine();
 			transaction.setTransactionDate(new Date());
 			transaction.setTransactionType(transactionType);
@@ -330,4 +363,3 @@ public class BankingMenu {
 		}
 	}
 }
-

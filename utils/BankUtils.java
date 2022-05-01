@@ -10,9 +10,9 @@ public class BankUtils {
 	
 		long accountNumber = 0;
 		try {
-			long randomNumber = (long)(100000000000000l * random.nextDouble());
-			if(String.valueOf(randomNumber).length() != 14) {
-				randomNumber += 100000000000000l;
+			long randomNumber = (long)(10000000000000l * random.nextDouble());
+			if(String.valueOf(randomNumber).length() != 14 ) {
+				randomNumber += 10000000000000l;
 			}
 			accountNumber = randomNumber;	
 		} catch(Exception exception) {

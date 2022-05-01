@@ -8,7 +8,6 @@ public class Validation {
     boolean verified;
 	public boolean verifyPassword(String password, String confirmPassword, NewAccount newAccount) throws Exception {
 		    verified = false;
-//			confirmPassword = null;
 			if(confirmPassword.equals(newAccount.getPassword())) {
 				verified = true;
 			}

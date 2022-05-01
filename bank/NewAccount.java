@@ -48,8 +48,16 @@ public class NewAccount {
 		return password;
 	}
 
-	public void setPassword(String password) {
-		this.password = password;
+	public boolean setPassword(String password, boolean passwordLoop) throws Exception {
+		if(password.length() >= 3) {
+			this.password = password;
+			passwordLoop = false;
+		}
+		else {
+			passwordLoop = true;
+			throw new Exception("PASSWORD MUST CONSISTS OF ATLEAST 3 CHARACTERS");
+		}
+		return passwordLoop;
 	}
 
 	public String getConfirmPassword() {
